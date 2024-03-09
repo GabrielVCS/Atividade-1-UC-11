@@ -110,4 +110,40 @@ public class ProdutosDAO {
             }
         }
     }
+    
+    //Lista os produtos vendidos |||(FALTA IMPLEMENTAR A TELA DE VENDAS)|||
+    public ArrayList<ProdutosDTO> listarProdutosVendidos() {
+        conn = new conectaDAO().getConexao();
+
+        // Limpando a lista antes de adicionar novos itens
+        listagem.clear();
+
+        String sql = "SELECT * FROM produtos WHERE status = 'Vendido'";
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(rs.getInt("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setValor(rs.getInt("valor"));
+                produto.setStatus(rs.getString("status"));
+                listagem.add(produto);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Erro ao listar produtos: " + ex.getMessage());
+        } finally {
+            // Fechando a conexão com o SQL depois de usar
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar a conexão: " + e.getMessage());
+            }
+        }
+        return listagem;
+    }
 }
