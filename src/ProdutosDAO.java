@@ -80,4 +80,34 @@ public class ProdutosDAO {
         }
         return listagem;
     }
+
+    // Método para vender um produto (atualizar o status para "Vendido")
+    public void venderProduto(int idProduto) {
+
+        conn = new conectaDAO().getConexao();
+
+        // Consulta SQL para atualizar o status para "Vendido"
+        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+
+        // Configuração da conexão com o banco de dados
+        try ( PreparedStatement stmt = conn.prepareStatement(sql)) {
+            // Substituindo o marcador de posição (?) pelo ID do produto
+            stmt.setInt(1, idProduto);
+
+            // Executando a atualização
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            // Tratamento de exceção em caso de erro de banco de dados
+            e.printStackTrace(); // ou use um logger para lidar com o erro de maneira adequada
+        } finally {
+            // Fechando a conexão no bloco finally para garantir que seja fechada, independentemente de exceções
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace(); // ou use um logger para lidar com o erro de fechamento de conexão
+                }
+            }
+        }
+    }
 }
